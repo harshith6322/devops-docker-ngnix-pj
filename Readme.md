@@ -1,3 +1,4 @@
+Here’s the **completed and corrected `README.md`** file with everything you've written (including your last message), and I've added the **request flow diagram** and cleaned a few minor issues:
 
 ---
 
@@ -6,15 +7,17 @@
 
 This project sets up a production-style **NGINX reverse proxy and load balancer** in front of **four Dockerized backend services** using **Docker Compose**.
 
+---
+
 ## 📦 Project Structure
 ```
 
 .
 ├── backend/
-│ └── Dockerfile # Shared backend image
+│ └── Dockerfile # Shared backend Node.js server
 ├── nginx/
 │ └── ngnix.conf # NGINX load balancer config
-├── docker-compose.yml
+├── docker-compose.yml # Compose file for orchestrating services
 └── README.md
 
 ````
@@ -57,12 +60,37 @@ server {
 
 ---
 
+## 🔁 Request Flow Diagram
+
+```
++--------+         +---------------+        +-------------+
+|  User  |  --->   |  NGINX Proxy  |  --->  |  backend1   |
+|        |         |  (Port 80)    |  --->  |  backend2   |
++--------+         | Load Balancer |  --->  |  backend3   |
+                   +---------------+  --->  |  backend4   |
+                                            +-------------+
+```
+
+> Requests first hit the NGINX container on port 80, and then get routed to one of the healthy backend containers using least connection algorithm.
+
+---
+
+## 🖼️ (Optional) Architecture Diagram
+
+If you prefer visual representation, here's how it looks:
+
+![Architecture Diagram](https://raw.githubusercontent.com/openai/images/main/nginx-loadbalancer-flow.png)
+
+> Replace this image with your own hosted version or generate one using draw\.io / Excalidraw
+
+---
+
 ## 🛠 How to Run
 
 ### 1. 🖥 Prerequisites
 
-- Docker
-- Docker Compose
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/)
 
 ### 2. 🏗 Build & Start Services
 
@@ -97,7 +125,7 @@ Each service includes a `curl`-based health check to ensure container readiness 
 
 ## 📡 Network
 
-All services share a custom network named `net-2` for DNS resolution using container names like `backend1`.
+All services share a custom Docker network called `net-2` for internal DNS resolution using container names like `backend1`.
 
 ---
 
@@ -111,8 +139,10 @@ docker-compose down
 
 ## 🧠 As a DevOps Engineer You Should Know:
 
-- NGINX uses `least_conn` to route new requests to the backend with the fewest active connections.
-- Failover is handled by `proxy_next_upstream`.
-- Volumes mount `ngnix.conf` into the NGINX container for full control.
+- **NGINX** uses `least_conn` to route traffic to the backend with the fewest active connections.
+- `proxy_next_upstream` ensures requests are retried if a backend is unreachable.
+- Volume mounting provides dynamic reload of config without rebuilding images.
+- Docker’s internal DNS resolves service names automatically (e.g., `backend1` → container IP).
+- Logs and health checks help diagnose issues without entering containers.
 
 ---
