@@ -4,7 +4,8 @@
 ```markdown
 # 🐳 NGINX Load Balancer with Dockerized Node.js Backends
 
-This project sets up a production-style **NGINX reverse proxy and load balancer** in front of **four Dockerized backend services** using **Docker Compose**.
+This project sets up a production-style **NGINX reverse proxy and load balancer** in front of
+**four Dockerized backend services** using **Docker Compose**.
 
 ---
 
